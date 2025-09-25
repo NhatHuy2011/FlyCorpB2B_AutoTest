@@ -12,7 +12,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
-public class SearchPage {
+public class SearchFlightPage {
     private final WebDriver driver;
 
     private final By oneWayLabel = By.cssSelector("label[for='one-way']");
@@ -46,7 +46,7 @@ public class SearchPage {
     private final By multiSearchBtn = By.cssSelector(".js-multi .btn-search");
 
 
-    public SearchPage(WebDriver driver) {
+    public SearchFlightPage(WebDriver driver) {
         this.driver = driver;
     }
 

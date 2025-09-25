@@ -1,6 +1,6 @@
 package org.example.test;
 
-import org.example.pages.SearchPage;
+import org.example.pages.SearchFlightPage;
 import org.example.utils.ConfigReader;
 import org.example.utils.ExcelUtils;
 import org.junit.jupiter.api.AfterEach;
@@ -14,7 +14,7 @@ import java.time.Duration;
 import java.util.Arrays;
 import java.util.List;
 
-public class SearchPageTest {
+public class SearchFlightPageTest {
     private WebDriver driver;
     private static final String FILE_PATH = ConfigReader.getExcelPath();
 
@@ -67,33 +67,33 @@ public class SearchPageTest {
         String travelClass = row[13];
         String expected = row[14];
 
-        SearchPage searchPage = new SearchPage(driver);
+        SearchFlightPage searchFlightPage = new SearchFlightPage(driver);
         String actualMessage;
         boolean isTestPassed;
 
         try {
-            searchPage.selectDirection(direction);
-            searchPage.selectFromCity(inputFrom);
-            searchPage.selectToCity(inputTo);
+            searchFlightPage.selectDirection(direction);
+            searchFlightPage.selectFromCity(inputFrom);
+            searchFlightPage.selectToCity(inputTo);
 
-            if (handleDepartureDateError(searchPage, departureDate, expected, rowIndex)) {
+            if (handleDepartureDateError(searchFlightPage, departureDate, expected, rowIndex)) {
                 return;
             }
 
             if (direction.equals("round-trip")) {
-                if (handleReturnDateError(searchPage, returnDate, expected, rowIndex)) {
+                if (handleReturnDateError(searchFlightPage, returnDate, expected, rowIndex)) {
                     return;
                 }
             }
 
-            searchPage.openPassengerDropdown();
-            searchPage.addAdult(Integer.parseInt(adult));
-            searchPage.addChild(Integer.parseInt(child));
-            searchPage.addInfant(Integer.parseInt(infant));
-            searchPage.selectTravelClass(travelClass);
+            searchFlightPage.openPassengerDropdown();
+            searchFlightPage.addAdult(Integer.parseInt(adult));
+            searchFlightPage.addChild(Integer.parseInt(child));
+            searchFlightPage.addInfant(Integer.parseInt(infant));
+            searchFlightPage.selectTravelClass(travelClass);
 
-            boolean click = searchPage.clickSearchButton(direction);
-            isTestPassed = handleSearchErrors(searchPage, expected, click, rowIndex);
+            boolean click = searchFlightPage.clickSearchButton(direction);
+            isTestPassed = handleSearchErrors(searchFlightPage, expected, click, rowIndex);
 
         } catch (Exception e) {
             actualMessage = e.getMessage();
@@ -103,8 +103,8 @@ public class SearchPageTest {
     }
 
     // Xử lý lỗi ngày đi
-    private boolean handleDepartureDateError(SearchPage searchPage, String departureDate, String expected, int rowIndex) {
-        String invalidMessage = searchPage.selectDepartureDate(departureDate);
+    private boolean handleDepartureDateError(SearchFlightPage searchFlightPage, String departureDate, String expected, int rowIndex) {
+        String invalidMessage = searchFlightPage.selectDepartureDate(departureDate);
         if (!invalidMessage.isEmpty()) {
             boolean isTestPassed = expected.trim().equalsIgnoreCase(invalidMessage);
             ExcelUtils.writeTestResults(FILE_PATH, "SearchFlight", rowIndex, invalidMessage, 15, isTestPassed ? "Pass" : "Fail", 16);
@@ -114,8 +114,8 @@ public class SearchPageTest {
     }
 
     // Xử lý lỗi ngày về
-    private boolean handleReturnDateError(SearchPage searchPage, String returnDate, String expected, int rowIndex) {
-        String invalidReturnMessage = searchPage.selectReturnDate(returnDate);
+    private boolean handleReturnDateError(SearchFlightPage searchFlightPage, String returnDate, String expected, int rowIndex) {
+        String invalidReturnMessage = searchFlightPage.selectReturnDate(returnDate);
         if (!invalidReturnMessage.isEmpty()) {
             boolean isTestPassed = expected.trim().equalsIgnoreCase(invalidReturnMessage);
             ExcelUtils.writeTestResults(FILE_PATH, "SearchFlight", rowIndex, invalidReturnMessage, 15, isTestPassed ? "Pass" : "Fail", 16);
@@ -125,8 +125,8 @@ public class SearchPageTest {
     }
 
     // Xử lý lỗi sau khi nhấn nút tìm kiếm
-    private boolean handleSearchErrors(SearchPage searchPage, String expected, boolean click, int rowIndex) {
-        List<String> actualErrors = searchPage.getAllErrorMessages();
+    private boolean handleSearchErrors(SearchFlightPage searchFlightPage, String expected, boolean click, int rowIndex) {
+        List<String> actualErrors = searchFlightPage.getAllErrorMessages();
         String actualMessage;
         boolean isTestPassed;
 
