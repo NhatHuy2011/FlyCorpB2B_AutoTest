@@ -1,4 +1,4 @@
-package org.example.pages;
+package org.example.pages.SearchFlightPage;
 
 import org.openqa.selenium.By;
 import org.openqa.selenium.JavascriptExecutor;
@@ -49,17 +49,15 @@ public class SearchFlightPage {
 
     //Departure
     private final By departureInput = By.id("input_departure");
-    private final By departureCalendar = By.cssSelector("div.daterangepicker.opensright.show-calendar");
 
     //Return
     private final By returnInput = By.id("input_return");
-    private final By returnCalendar = By.cssSelector("div.daterangepicker.opensleft.show-calendar");
 
-    //Component In Calendar
-    private final By monthLabel = By.cssSelector("th.month");
-    private final By nextButton = By.cssSelector("th.next");
-    private final By prevButton = By.cssSelector("th.prev");
-    private final By availableDates = By.cssSelector("td.available");
+    //Multi Departure 2
+    private final By multiDeparture2Input = By.id("multi_departure_2");
+
+    //Multi Departure 3
+    private final By multiDeparture3Input = By.id("multi_departure_3");
 
     //Airline
     private final By airlineInput = By.cssSelector("input.airline-text");
@@ -176,78 +174,29 @@ public class SearchFlightPage {
         driver.findElement(addFlightButton).click();
     }
 
-    public String selectDepartureDate(int day, Month month, int year) {
-        driver.findElement(departureInput).click();
-
-        WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(5));
-        WebElement calendar = wait.until(ExpectedConditions.visibilityOfElementLocated(departureCalendar));
-
-        while (true) {
-            String monthYearText = calendar.findElement(monthLabel).getText().trim();
-            System.out.println("Month Year Departure Text: " + monthYearText);
-
-            String[] parts = monthYearText.split(" ");
-            if (parts.length < 2) return "Không cho phép chọn";
-
-            DateTimeFormatter monthFormatter = DateTimeFormatter.ofPattern("MMM", Locale.ENGLISH);
-            Month currentMonth = Month.from(monthFormatter.parse(parts[0]));
-            int currentYear = Integer.parseInt(parts[1]);
-
-            if (currentYear == year && currentMonth == month) {
-                break;
-            } else if (currentYear < year || (currentYear == year && currentMonth.getValue() < month.getValue())) {
-                calendar.findElement(nextButton).click();
-            } else {
-                calendar.findElement(prevButton).click();
-            }
-        }
-
-        for (WebElement date : calendar.findElements(availableDates)) {
-            if (date.getText().equals(String.valueOf(day))) {
-                date.click();
-                return "";
-            }
-        }
-        return "Không cho phép chọn";
+    public String selectDepartureDate(int day, Month month, int year){
+        SearchFlightCommon searchFlightCommon = new SearchFlightCommon(driver);
+        return searchFlightCommon.selectDate(departureInput, day, month, year);
     }
 
-    public String selectReturnDate(int day, Month month, int year) {
-        driver.findElement(returnInput).click();
+    public String selectReturnDate(int day, Month month, int year){
+        SearchFlightCommon searchFlightCommon = new SearchFlightCommon(driver);
+        return searchFlightCommon.selectDate(returnInput, day, month, year);
+    }
 
-        WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(5));
-        WebElement calendar = wait.until(ExpectedConditions.visibilityOfElementLocated(returnCalendar));
+    public String selectMultiDeparture2(int day, Month month, int year){
+        SearchFlightCommon searchFlightCommon = new SearchFlightCommon(driver);
+        return searchFlightCommon.selectDate(multiDeparture2Input, day, month, year);
+    }
 
-        while (true) {
-            String monthYearText = calendar.findElement(monthLabel).getText().trim();
-            System.out.println("Month Year Return Text: " + monthYearText);
-
-            String[] parts = monthYearText.split(" ");
-            if (parts.length < 2) return "Không cho phép chọn";
-
-            DateTimeFormatter monthFormatter = DateTimeFormatter.ofPattern("MMM", Locale.ENGLISH);
-            Month currentMonth = Month.from(monthFormatter.parse(parts[0]));
-            int currentYear = Integer.parseInt(parts[1]);
-
-            if (currentYear == year && currentMonth == month) {
-                break;
-            } else if (currentYear < year || (currentYear == year && currentMonth.getValue() < month.getValue())) {
-                calendar.findElement(nextButton).click();
-            } else {
-                calendar.findElement(prevButton).click();
-            }
-        }
-
-        for (WebElement date : calendar.findElements(availableDates)) {
-            if (date.getText().equals(String.valueOf(day))) {
-                date.click();
-                return "";
-            }
-        }
-        return "Không cho phép chọn";
+    public String selectMultiDeparture3(int day, Month month, int year){
+        SearchFlightCommon searchFlightCommon = new SearchFlightCommon(driver);
+        return searchFlightCommon.selectDate(multiDeparture3Input, day, month, year);
     }
 
     public void selectAirlineByCode(String code) {
         driver.findElement(airlineInput).click();
+
         List<WebElement> options = driver.findElements(airlineOptions);
         for (WebElement option : options) {
             if (Objects.requireNonNull(option.getAttribute("data-value")).equalsIgnoreCase(code)) {

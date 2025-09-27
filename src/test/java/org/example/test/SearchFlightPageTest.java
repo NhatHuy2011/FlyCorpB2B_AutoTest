@@ -1,6 +1,6 @@
 package org.example.test;
 
-import org.example.pages.SearchFlightPage;
+import org.example.pages.SearchFlightPage.SearchFlightPage;
 import org.example.utils.ConfigReader;
 import org.example.utils.ExcelUtils;
 import org.junit.jupiter.api.AfterEach;
@@ -112,10 +112,18 @@ public class SearchFlightPageTest {
                 searchFlightPage.selectMultiFrom2City(multiFrom2);
                 searchFlightPage.selectMultiTo2City(multiTo2);
 
+                if (handleMultiDeparute2DateError(searchFlightPage, multiDeparture2, expected, rowIndex)) {
+                    return;
+                }
+
                 searchFlightPage.clickAddFlight();
 
                 searchFlightPage.selectMultiFrom3City(multiFrom3);
                 searchFlightPage.selectMultiTo3City(multiTo3);
+
+                if (handleMultiDeparute3DateError(searchFlightPage, multiDeparture3, expected, rowIndex)) {
+                    return;
+                }
             }
 
             searchFlightPage.openPassengerDropdown();
@@ -169,6 +177,43 @@ public class SearchFlightPageTest {
         }
         return false;
     }
+
+    // Handle Multi Departure 2 Date
+    private boolean handleMultiDeparute2DateError(SearchFlightPage searchFlightPage, String multiDeparture2, String expected, int rowIndex) {
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+        LocalDate date = LocalDate.parse(multiDeparture2, formatter);
+
+        int day = date.getDayOfMonth();
+        int month = date.getMonthValue();
+        int year = date.getYear();
+
+        String invalidReturnMessage = searchFlightPage.selectMultiDeparture2(day, Month.of(month), year);
+        if (!invalidReturnMessage.isEmpty()) {
+            boolean isTestPassed = expected.trim().equalsIgnoreCase(invalidReturnMessage);
+            ExcelUtils.writeTestResults(FILE_PATH, "SearchFlight", rowIndex, invalidReturnMessage, 21, isTestPassed ? "Pass" : "Fail", 22);
+            return true;
+        }
+        return false;
+    }
+
+    // Handle Multi Departure 3 Date
+    private boolean handleMultiDeparute3DateError(SearchFlightPage searchFlightPage, String multiDeparture3, String expected, int rowIndex) {
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+        LocalDate date = LocalDate.parse(multiDeparture3, formatter);
+
+        int day = date.getDayOfMonth();
+        int month = date.getMonthValue();
+        int year = date.getYear();
+
+        String invalidReturnMessage = searchFlightPage.selectMultiDeparture3(day, Month.of(month), year);
+        if (!invalidReturnMessage.isEmpty()) {
+            boolean isTestPassed = expected.trim().equalsIgnoreCase(invalidReturnMessage);
+            ExcelUtils.writeTestResults(FILE_PATH, "SearchFlight", rowIndex, invalidReturnMessage, 21, isTestPassed ? "Pass" : "Fail", 22);
+            return true;
+        }
+        return false;
+    }
+
 
     // Handle Error After Click Search
     private boolean handleSearchErrors(SearchFlightPage searchFlightPage, String expected, boolean click, int rowIndex) {
