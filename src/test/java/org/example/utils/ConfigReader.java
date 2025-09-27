@@ -27,12 +27,12 @@ public class ConfigReader {
         return properties.getProperty("excel.sheet.searchFlight");
     }
 
-    public static String getCookiesAgencyName(){
-        return properties.getProperty("cookies.agency.name");
+    public static String getCookiesAgencySessionName(){
+        return properties.getProperty("cookies.agency_session.name");
     }
 
-    public static String getCookiesAgencyValue(){
-        return properties.getProperty("cookies.agency.value");
+    public static String getCookiesAgencySessionValue(){
+        return properties.getProperty("cookies.agency_session.value");
     }
 
     public static String getCookiesXSRFTokenName(){

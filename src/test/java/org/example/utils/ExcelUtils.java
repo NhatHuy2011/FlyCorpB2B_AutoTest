@@ -37,7 +37,7 @@ public class ExcelUtils {
                     }
                 }
 
-                // chỉ add khi có ít nhất 1 ô không rỗng
+                // Chỉ add khi có ít nhất 1 ô không rỗng
                 if (!isEmpty) {
                     data.add(rowData);
                 }
@@ -57,8 +57,8 @@ public class ExcelUtils {
                 return cell.getStringCellValue().trim();
             case NUMERIC:
                 if (DateUtil.isCellDateFormatted(cell)) {
-                    // Format ngày theo yyyy-MM-dd
-                    SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+                    // Format ngày theo dd/MM/yyyy
+                    SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
                     return sdf.format(cell.getDateCellValue());
                 } else {
                     double value = cell.getNumericCellValue();

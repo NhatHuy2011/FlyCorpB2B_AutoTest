@@ -11,6 +11,9 @@ import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
 
 import java.time.Duration;
+import java.time.LocalDate;
+import java.time.Month;
+import java.time.format.DateTimeFormatter;
 import java.util.Arrays;
 import java.util.List;
 
@@ -26,7 +29,7 @@ public class SearchFlightPageTest {
 
         driver.get(ConfigReader.getUrl());
 
-        Cookie agencySession = new Cookie(ConfigReader.getCookiesAgencyName(), ConfigReader.getCookiesAgencyValue());
+        Cookie agencySession = new Cookie(ConfigReader.getCookiesAgencySessionName(), ConfigReader.getCookiesAgencySessionValue());
         Cookie XSRFToken = new Cookie(ConfigReader.getCookiesXSRFTokenName(), ConfigReader.getCookiesXSRFTokenValue());
 
         driver.manage().addCookie(agencySession);
@@ -36,19 +39,32 @@ public class SearchFlightPageTest {
     }
 
     @Test
-    public void testSearchFlight() throws Exception {
+    public void testSearchFlightOneWay() throws Exception {
         List<String[]> testData = ExcelUtils.readExcel(FILE_PATH, ConfigReader.getSheetSearchFlight());
-        int rowIndex = 0;
-        for (String[] row : testData){
-            runTestCase(row, rowIndex + 2);
+        int start = 1;
+        int end = 5;
+        for (int i = start; i<=end; i++){
+            String[] row = testData.get(i);
+            runTestCase(row, i + 2);
             driver.get(ConfigReader.getUrl());
-            rowIndex++;
+        }
+    }
+
+    @Test
+    public void testSearchFlightRoundTrip() throws Exception {
+        List<String[]> testData = ExcelUtils.readExcel(FILE_PATH, ConfigReader.getSheetSearchFlight());
+        int start = 7;
+        int end = 9;
+        for (int i = start; i<=end; i++){
+            String[] row = testData.get(i);
+            runTestCase(row, i + 2);
+            driver.get(ConfigReader.getUrl());
         }
     }
 
     @Test
     public void testOneSearchFlight() throws Exception {
-        int targerRowIndex = 4;
+        int targerRowIndex = 12;
         List<String[]> testData = ExcelUtils.readExcel(FILE_PATH, ConfigReader.getSheetSearchFlight());
         String[] row = testData.get(targerRowIndex);
         runTestCase(row, targerRowIndex + 2);
@@ -58,14 +74,20 @@ public class SearchFlightPageTest {
         String direction = row[4];
         String inputFrom = row[5];
         String inputTo = row[6];
-        String departureDate = row[7];
-        String returnDate = direction.equals("round-trip") ? row[8] : "";
-        String inputAirline = row[9];
-        String adult = row[10];
-        String child = row[11];
-        String infant = row[12];
-        String travelClass = row[13];
-        String expected = row[14];
+        String multiFrom2 = row[7];
+        String multiTo2 = row[8];
+        String multiFrom3 = row[9];
+        String multiTo3 = row[10];
+        String departureDate = row[11];
+        String returnDate = direction.equals("round-trip") ? row[12] : "";
+        String multiDeparture2 = direction.equals("multi-city") ? row[13] : "";
+        String multiDeparture3 = direction.equals("multi-city") ? row[14] : "";
+        String inputAirline = row[15];
+        String adult = row[16];
+        String child = row[17];
+        String infant = row[18];
+        String travelClass = row[19];
+        String expected = row[20];
 
         SearchFlightPage searchFlightPage = new SearchFlightPage(driver);
         String actualMessage;
@@ -86,6 +108,16 @@ public class SearchFlightPageTest {
                 }
             }
 
+            if(direction.equals("multi-city")){
+                searchFlightPage.selectMultiFrom2City(multiFrom2);
+                searchFlightPage.selectMultiTo2City(multiTo2);
+
+                searchFlightPage.clickAddFlight();
+
+                searchFlightPage.selectMultiFrom3City(multiFrom3);
+                searchFlightPage.selectMultiTo3City(multiTo3);
+            }
+
             searchFlightPage.openPassengerDropdown();
             searchFlightPage.addAdult(Integer.parseInt(adult));
             searchFlightPage.addChild(Integer.parseInt(child));
@@ -98,33 +130,47 @@ public class SearchFlightPageTest {
         } catch (Exception e) {
             actualMessage = e.getMessage();
             isTestPassed = expected.trim().equalsIgnoreCase(actualMessage);
-            ExcelUtils.writeTestResults(FILE_PATH, "SearchFlight", rowIndex, actualMessage, 15, isTestPassed ? "Pass" : "Fail", 16);
+            ExcelUtils.writeTestResults(FILE_PATH, "SearchFlight", rowIndex, actualMessage, 21, isTestPassed ? "Pass" : "Fail", 22);
         }
     }
 
-    // Xử lý lỗi ngày đi
+    // Handle Error Departure Date
     private boolean handleDepartureDateError(SearchFlightPage searchFlightPage, String departureDate, String expected, int rowIndex) {
-        String invalidMessage = searchFlightPage.selectDepartureDate(departureDate);
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+        LocalDate date = LocalDate.parse(departureDate, formatter);
+
+        int day = date.getDayOfMonth();
+        int month = date.getMonthValue();
+        int year = date.getYear();
+
+        String invalidMessage = searchFlightPage.selectDepartureDate(day, Month.of(month), year);
         if (!invalidMessage.isEmpty()) {
             boolean isTestPassed = expected.trim().equalsIgnoreCase(invalidMessage);
-            ExcelUtils.writeTestResults(FILE_PATH, "SearchFlight", rowIndex, invalidMessage, 15, isTestPassed ? "Pass" : "Fail", 16);
+            ExcelUtils.writeTestResults(FILE_PATH, "SearchFlight", rowIndex, invalidMessage, 21, isTestPassed ? "Pass" : "Fail", 22);
             return true;
         }
         return false;
     }
 
-    // Xử lý lỗi ngày về
+    // Handle Error Return Date
     private boolean handleReturnDateError(SearchFlightPage searchFlightPage, String returnDate, String expected, int rowIndex) {
-        String invalidReturnMessage = searchFlightPage.selectReturnDate(returnDate);
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+        LocalDate date = LocalDate.parse(returnDate, formatter);
+
+        int day = date.getDayOfMonth();
+        int month = date.getMonthValue();
+        int year = date.getYear();
+
+        String invalidReturnMessage = searchFlightPage.selectReturnDate(day, Month.of(month), year);
         if (!invalidReturnMessage.isEmpty()) {
             boolean isTestPassed = expected.trim().equalsIgnoreCase(invalidReturnMessage);
-            ExcelUtils.writeTestResults(FILE_PATH, "SearchFlight", rowIndex, invalidReturnMessage, 15, isTestPassed ? "Pass" : "Fail", 16);
+            ExcelUtils.writeTestResults(FILE_PATH, "SearchFlight", rowIndex, invalidReturnMessage, 21, isTestPassed ? "Pass" : "Fail", 22);
             return true;
         }
         return false;
     }
 
-    // Xử lý lỗi sau khi nhấn nút tìm kiếm
+    // Handle Error After Click Search
     private boolean handleSearchErrors(SearchFlightPage searchFlightPage, String expected, boolean click, int rowIndex) {
         List<String> actualErrors = searchFlightPage.getAllErrorMessages();
         String actualMessage;
@@ -140,12 +186,12 @@ public class SearchFlightPageTest {
             if (click && actualErrors.isEmpty()) {
                 actualMessage = "Hiện form danh sách chuyến bay";
             } else {
-                actualMessage = actualErrors.isEmpty() ? "" : actualErrors.get(0);
+                actualMessage = actualErrors.isEmpty() ? "" : actualErrors.getFirst();
             }
             isTestPassed = expected.trim().equalsIgnoreCase(actualMessage);
         }
 
-        ExcelUtils.writeTestResults(FILE_PATH, "SearchFlight", rowIndex, actualMessage, 15, isTestPassed ? "Pass" : "Fail", 16);
+        ExcelUtils.writeTestResults(FILE_PATH, "SearchFlight", rowIndex, actualMessage, 21, isTestPassed ? "Pass" : "Fail", 22);
         return isTestPassed;
     }
 
