@@ -1,0 +1,1 @@
+Đặt file application.properties trong thư mục này
