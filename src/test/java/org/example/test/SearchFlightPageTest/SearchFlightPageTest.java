@@ -1,4 +1,4 @@
-package org.example.test;
+package org.example.test.SearchFlightPageTest;
 
 import org.example.pages.SearchFlightPage.SearchFlightPage;
 import org.example.utils.ConfigReader;
@@ -12,7 +12,6 @@ import org.openqa.selenium.chrome.ChromeDriver;
 
 import java.time.Duration;
 import java.time.LocalDate;
-import java.time.Month;
 import java.time.format.DateTimeFormatter;
 import java.util.Arrays;
 import java.util.List;
@@ -98,12 +97,14 @@ public class SearchFlightPageTest {
             searchFlightPage.selectFromCity(inputFrom);
             searchFlightPage.selectToCity(inputTo);
 
-            if (handleDepartureDateError(searchFlightPage, departureDate, expected, rowIndex)) {
+            if (handleDateError(departureDate, expected, rowIndex,
+                    d -> searchFlightPage.selectDepartureDate(d.getDayOfMonth(), d.getMonth(), d.getYear()))) {
                 return;
             }
 
             if (direction.equals("round-trip")) {
-                if (handleReturnDateError(searchFlightPage, returnDate, expected, rowIndex)) {
+                if (handleDateError(returnDate, expected, rowIndex,
+                        d -> searchFlightPage.selectReturnDate(d.getDayOfMonth(), d.getMonth(), d.getYear()))) {
                     return;
                 }
             }
@@ -112,7 +113,8 @@ public class SearchFlightPageTest {
                 searchFlightPage.selectMultiFrom2City(multiFrom2);
                 searchFlightPage.selectMultiTo2City(multiTo2);
 
-                if (handleMultiDeparute2DateError(searchFlightPage, multiDeparture2, expected, rowIndex)) {
+                if (handleDateError(multiDeparture2, expected, rowIndex,
+                        d -> searchFlightPage.selectMultiDeparture2(d.getDayOfMonth(), d.getMonth(), d.getYear()))) {
                     return;
                 }
 
@@ -121,7 +123,8 @@ public class SearchFlightPageTest {
                 searchFlightPage.selectMultiFrom3City(multiFrom3);
                 searchFlightPage.selectMultiTo3City(multiTo3);
 
-                if (handleMultiDeparute3DateError(searchFlightPage, multiDeparture3, expected, rowIndex)) {
+                if (handleDateError(multiDeparture3, expected, rowIndex,
+                        d -> searchFlightPage.selectMultiDeparture3(d.getDayOfMonth(), d.getMonth(), d.getYear()))) {
                     return;
                 }
             }
@@ -142,78 +145,25 @@ public class SearchFlightPageTest {
         }
     }
 
-    // Handle Error Departure Date
-    private boolean handleDepartureDateError(SearchFlightPage searchFlightPage, String departureDate, String expected, int rowIndex) {
+    //Handle Date Error
+    private boolean handleDateError(
+            String dateStr,
+            String expected,
+            int rowIndex,
+            java.util.function.Function<LocalDate, String> dateSelector
+    ) {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
-        LocalDate date = LocalDate.parse(departureDate, formatter);
+        LocalDate date = LocalDate.parse(dateStr, formatter);
 
-        int day = date.getDayOfMonth();
-        int month = date.getMonthValue();
-        int year = date.getYear();
-
-        String invalidMessage = searchFlightPage.selectDepartureDate(day, Month.of(month), year);
+        String invalidMessage = dateSelector.apply(date);
         if (!invalidMessage.isEmpty()) {
             boolean isTestPassed = expected.trim().equalsIgnoreCase(invalidMessage);
-            ExcelUtils.writeTestResults(FILE_PATH, "SearchFlight", rowIndex, invalidMessage, 21, isTestPassed ? "Pass" : "Fail", 22);
+            ExcelUtils.writeTestResults(FILE_PATH, "SearchFlight", rowIndex, invalidMessage, 21,
+                    isTestPassed ? "Pass" : "Fail", 22);
             return true;
         }
         return false;
     }
-
-    // Handle Error Return Date
-    private boolean handleReturnDateError(SearchFlightPage searchFlightPage, String returnDate, String expected, int rowIndex) {
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
-        LocalDate date = LocalDate.parse(returnDate, formatter);
-
-        int day = date.getDayOfMonth();
-        int month = date.getMonthValue();
-        int year = date.getYear();
-
-        String invalidReturnMessage = searchFlightPage.selectReturnDate(day, Month.of(month), year);
-        if (!invalidReturnMessage.isEmpty()) {
-            boolean isTestPassed = expected.trim().equalsIgnoreCase(invalidReturnMessage);
-            ExcelUtils.writeTestResults(FILE_PATH, "SearchFlight", rowIndex, invalidReturnMessage, 21, isTestPassed ? "Pass" : "Fail", 22);
-            return true;
-        }
-        return false;
-    }
-
-    // Handle Multi Departure 2 Date
-    private boolean handleMultiDeparute2DateError(SearchFlightPage searchFlightPage, String multiDeparture2, String expected, int rowIndex) {
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
-        LocalDate date = LocalDate.parse(multiDeparture2, formatter);
-
-        int day = date.getDayOfMonth();
-        int month = date.getMonthValue();
-        int year = date.getYear();
-
-        String invalidReturnMessage = searchFlightPage.selectMultiDeparture2(day, Month.of(month), year);
-        if (!invalidReturnMessage.isEmpty()) {
-            boolean isTestPassed = expected.trim().equalsIgnoreCase(invalidReturnMessage);
-            ExcelUtils.writeTestResults(FILE_PATH, "SearchFlight", rowIndex, invalidReturnMessage, 21, isTestPassed ? "Pass" : "Fail", 22);
-            return true;
-        }
-        return false;
-    }
-
-    // Handle Multi Departure 3 Date
-    private boolean handleMultiDeparute3DateError(SearchFlightPage searchFlightPage, String multiDeparture3, String expected, int rowIndex) {
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
-        LocalDate date = LocalDate.parse(multiDeparture3, formatter);
-
-        int day = date.getDayOfMonth();
-        int month = date.getMonthValue();
-        int year = date.getYear();
-
-        String invalidReturnMessage = searchFlightPage.selectMultiDeparture3(day, Month.of(month), year);
-        if (!invalidReturnMessage.isEmpty()) {
-            boolean isTestPassed = expected.trim().equalsIgnoreCase(invalidReturnMessage);
-            ExcelUtils.writeTestResults(FILE_PATH, "SearchFlight", rowIndex, invalidReturnMessage, 21, isTestPassed ? "Pass" : "Fail", 22);
-            return true;
-        }
-        return false;
-    }
-
 
     // Handle Error After Click Search
     private boolean handleSearchErrors(SearchFlightPage searchFlightPage, String expected, boolean click, int rowIndex) {
