@@ -1,5 +1,7 @@
 package org.example.utils;
 
+import org.example.constant.Constant;
+
 import java.io.FileInputStream;
 import java.util.Properties;
 
@@ -8,7 +10,7 @@ public class ConfigReader {
 
     static {
         properties = new Properties();
-        try (FileInputStream fis = new FileInputStream("src/test/resources/application.properties")) {
+        try (FileInputStream fis = new FileInputStream(Constant.APPLICATION_PATH)) {
             properties.load(fis);
         } catch (Exception e) {
             e.printStackTrace();
@@ -17,14 +19,6 @@ public class ConfigReader {
 
     public static String getUrl(){
         return properties.getProperty("url");
-    }
-
-    public static String getExcelPath(){
-        return properties.getProperty("excel.path");
-    }
-
-    public static String getSheetSearchFlight(){
-        return properties.getProperty("excel.sheet.searchFlight");
     }
 
     public static String getCookiesAgencySessionName(){
