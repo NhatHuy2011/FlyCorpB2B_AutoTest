@@ -1,4 +1,4 @@
-package org.example.pages.SearchFlightPage;
+package org.example.pages.SearchFlight;
 
 import org.openqa.selenium.By;
 import org.openqa.selenium.JavascriptExecutor;

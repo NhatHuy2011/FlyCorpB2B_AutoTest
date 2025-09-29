@@ -1,6 +1,6 @@
-package org.example.test.SearchFlightPageTest;
+package org.example.runner.SearchFlight;
 
-import org.example.pages.SearchFlightPage.SearchFlightPage;
+import org.example.pages.SearchFlight.SearchFlightPage;
 import org.openqa.selenium.WebDriver;
 
 import java.time.LocalDate;
@@ -8,7 +8,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.function.Function;
 
-public class SearchFlightTestRunner {
+public class SearchFlightRunTestcase {
 
     public static class TestResult {
         public final String actualMessage;

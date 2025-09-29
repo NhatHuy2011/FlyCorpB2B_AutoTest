@@ -1,4 +1,4 @@
-package org.example.test.SearchFlightPageTest;
+package org.example.runner.SearchFlight;
 
 import org.example.constant.Constant;
 import org.example.utils.ExcelUtils;
@@ -6,7 +6,7 @@ import org.example.utils.ExcelUtils;
 public class SearchFlightResultHandler {
     public static void writeResult(
             int rowIndex,
-            SearchFlightTestRunner.TestResult result
+            SearchFlightRunTestcase.TestResult result
     ) {
         ExcelUtils.writeTestResults(
                 Constant.EXCEL_FILE_PATH,
