@@ -37,7 +37,7 @@ public class SearchFlightTest {
         List<String[]> testData = ExcelUtils.readExcel(Constant.EXCEL_FILE_PATH, Constant.EXCEL_SEARCHFLIGHT_SHEET);
         for (int i = 1; i <= 5; i++) {
             String[] row = testData.get(i);
-            var result = SearchFlightRunTestcase.runTestCase(driver, row);
+            var result = SearchFlightRunTestcase.validateSearch(driver, row);
             SearchFlightResultHandler.writeResult( i + 2, result);
             driver.get(ConfigReader.getUrl());
         }
@@ -48,7 +48,18 @@ public class SearchFlightTest {
         List<String[]> testData = ExcelUtils.readExcel(Constant.EXCEL_FILE_PATH, Constant.EXCEL_SEARCHFLIGHT_SHEET);
         for (int i = 7; i <= 9; i++) {
             String[] row = testData.get(i);
-            var result = SearchFlightRunTestcase.runTestCase(driver, row);
+            var result = SearchFlightRunTestcase.validateSearch(driver, row);
+            SearchFlightResultHandler.writeResult(i + 2, result);
+            driver.get(ConfigReader.getUrl());
+        }
+    }
+
+    @Test
+    public void testSearchFlightMultiCity() throws Exception {
+        List<String[]> testData = ExcelUtils.readExcel(Constant.EXCEL_FILE_PATH, Constant.EXCEL_SEARCHFLIGHT_SHEET);
+        for (int i = 12; i <= 12; i++) {
+            String[] row = testData.get(i);
+            var result = SearchFlightRunTestcase.validateSearch(driver, row);
             SearchFlightResultHandler.writeResult(i + 2, result);
             driver.get(ConfigReader.getUrl());
         }
@@ -59,7 +70,7 @@ public class SearchFlightTest {
         int targetRowIndex = 12;
         List<String[]> testData = ExcelUtils.readExcel(Constant.EXCEL_FILE_PATH, Constant.EXCEL_SEARCHFLIGHT_SHEET);
         String[] row = testData.get(targetRowIndex);
-        var result = SearchFlightRunTestcase.runTestCase(driver, row);
+        var result = SearchFlightRunTestcase.validateSearch(driver, row);
         SearchFlightResultHandler.writeResult( targetRowIndex + 2, result);
     }
 

@@ -3,6 +3,7 @@ package org.example.test.FlightList;
 import org.example.constant.Constant;
 import org.example.pages.FlightList.FlightListPage;
 import org.example.pages.SearchFlight.SearchFlightPage;
+import org.example.runner.SearchFlight.SearchFlightRunTestcase;
 import org.example.utils.ConfigReader;
 import org.example.utils.ExcelUtils;
 import org.junit.jupiter.api.AfterEach;
@@ -10,7 +11,6 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.openqa.selenium.Cookie;
 import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
 
 import java.time.Duration;
@@ -37,46 +37,75 @@ public class FlightListTest {
     }
 
     @Test
-    public void testFlightList() throws Exception {
-        int targetRowIndex = 1;
-        List<String[]> testData = ExcelUtils.readExcel(Constant.EXCEL_FILE_PATH, Constant.EXCEL_FLIGHTLIST_SHEET);
-        String[] row = testData.get(targetRowIndex);
+    public void testFlightListOneWay() throws Exception {
+        //Search Flight
+        List<String[]> testDataSearch = ExcelUtils.readExcel(Constant.EXCEL_FILE_PATH, Constant.EXCEL_SEARCHFLIGHT_SHEET);
+        int indexSearchFlight = 1;
+        String[] rowSearch = testDataSearch.get(indexSearchFlight);
+        SearchFlightRunTestcase.doSearch(driver, rowSearch);
 
-        // --- Thực hiện search flight ---
-        SearchFlightPage searchFlightPage = new SearchFlightPage(driver);
-        searchFlightPage.selectDirection(row[4]);
-        searchFlightPage.selectFromCity(row[5]);
-        searchFlightPage.selectToCity(row[6]);
+        //Flight List
+        List<String[]> testDataFlightList = ExcelUtils.readExcel(Constant.EXCEL_FILE_PATH, Constant.EXCEL_FLIGHTLIST_SHEET);
+        int indexFlightList = 1;
+        String[] rowFlightList = testDataFlightList.get(indexFlightList);
+        String oneWayIndex = rowFlightList[4];
 
-        // Ngày đi
-        searchFlightPage.selectDepartureDate(1, java.time.Month.DECEMBER, 2025);
+        try {
+            FlightListPage resultPage = new FlightListPage(driver);
+            resultPage.selectFlights(1, List.of(Integer.parseInt(oneWayIndex)));
+        } catch (Exception e){
+            System.out.println("Exception: " + e);
+        }
+    }
 
-        // Passengers + class
-        searchFlightPage.openPassengerDropdown();
-        searchFlightPage.addAdult(1);
-        searchFlightPage.selectTravelClass("economy");
+    @Test
+    public void testFlightListRoundTrip() throws Exception {
+        //Search Flight
+        List<String[]> testDataSearch = ExcelUtils.readExcel(Constant.EXCEL_FILE_PATH, Constant.EXCEL_SEARCHFLIGHT_SHEET);
+        int indexSearchFlight = 7;
+        String[] rowSearch = testDataSearch.get(indexSearchFlight);
+        SearchFlightRunTestcase.doSearch(driver, rowSearch);
 
-        // Click search
-        searchFlightPage.clickSearchButton(row[4]);
+        //Flight List
+        List<String[]> testDataFlightList = ExcelUtils.readExcel(Constant.EXCEL_FILE_PATH, Constant.EXCEL_FLIGHTLIST_SHEET);
+        int indexFlightList = 3;
+        String[] rowFlightList = testDataFlightList.get(indexFlightList);
+        String roundTripIndex1 = rowFlightList[5];
+        String roundTripIndex2 = rowFlightList[6];
 
         FlightListPage resultPage = new FlightListPage(driver);
-        resultPage.waitForResult();
+        resultPage.selectFlights(2, List.of(
+                Integer.parseInt(roundTripIndex1),
+                Integer.parseInt(roundTripIndex2)
+        ));
+        resultPage.clickNextPage();
+        Thread.sleep(5000);
+    }
 
-        if (resultPage.hasNoFlights()) {
-            System.out.println("No flights found: " + resultPage.getNoFlightMessage());
-        } else {
-            List<WebElement> cabins = resultPage.getCabinClassButtons();
-            if (!cabins.isEmpty()) {
-                cabins.get(0).click();
-                Thread.sleep(1000);
-            }
+    @Test
+    public void testFlightListMultiCity() throws Exception {
+        //Search Flight
+        List<String[]> testDataSearch = ExcelUtils.readExcel(Constant.EXCEL_FILE_PATH, Constant.EXCEL_SEARCHFLIGHT_SHEET);
+        int indexSearchFlight = 12;
+        String[] rowSearch = testDataSearch.get(indexSearchFlight);
+        SearchFlightRunTestcase.doSearch(driver, rowSearch);
 
-            List<WebElement> continueBtns = resultPage.getContinueButtons();
-            if (!continueBtns.isEmpty()) {
-                continueBtns.get(0).click();
-                System.out.println("Clicked continue → chuyển sang trang offer");
-            }
-        }
+        //Flight List
+        List<String[]> testDataFlightList = ExcelUtils.readExcel(Constant.EXCEL_FILE_PATH, Constant.EXCEL_FLIGHTLIST_SHEET);
+        int indexFlightList = 5;
+        String[] rowFlightList = testDataFlightList.get(indexFlightList);
+        String multiCityIndex1 = rowFlightList[7];
+        String multiCityIndex2 = rowFlightList[8];
+        String multiCityIndex3 = rowFlightList[9];
+
+        FlightListPage resultPage = new FlightListPage(driver);
+        resultPage.selectFlights(3, List.of(
+                Integer.parseInt(multiCityIndex1),
+                Integer.parseInt(multiCityIndex2),
+                Integer.parseInt(multiCityIndex3)
+        ));
+        resultPage.clickNextPage();
+        Thread.sleep(5000);
     }
 
     @AfterEach

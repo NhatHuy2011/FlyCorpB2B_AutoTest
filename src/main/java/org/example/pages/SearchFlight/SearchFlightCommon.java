@@ -29,7 +29,6 @@ public class SearchFlightCommon {
 
         while (true) {
             String monthYearText = calendar.findElement(monthLabel).getText().trim();
-            System.out.println("Calendar Text: " + monthYearText);
 
             String[] parts = monthYearText.split(" ");
             if (parts.length < 2) return "Không cho phép chọn";

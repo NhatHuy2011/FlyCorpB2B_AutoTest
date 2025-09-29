@@ -22,7 +22,7 @@ public class SearchFlightRunTestcase {
 
     private static final DateTimeFormatter FORMATTER = DateTimeFormatter.ofPattern("dd/MM/yyyy");
 
-    public static TestResult runTestCase(WebDriver driver, String[] row) throws Exception {
+    public static TestResult validateSearch(WebDriver driver, String[] row) throws Exception {
         String direction = row[4];
         String inputFrom = row[5];
         String inputTo = row[6];
@@ -129,5 +129,66 @@ public class SearchFlightRunTestcase {
         } else {
             return expected.trim().equalsIgnoreCase(actualMessage);
         }
+    }
+
+    public static void doSearch(WebDriver driver, String[] row) throws Exception{
+        String direction = row[4];
+        String inputFrom = row[5];
+        String inputTo = row[6];
+        String multiFrom2 = row[7];
+        String multiTo2 = row[8];
+        String multiFrom3 = row[9];
+        String multiTo3 = row[10];
+        String departureDate = row[11];
+        String returnDate = direction.equals("round-trip") ? row[12] : "";
+        String multiDeparture2 = direction.equals("multi-city") ? row[13] : "";
+        String multiDeparture3 = direction.equals("multi-city") ? row[14] : "";
+        String inputAirline = row[15];
+        String adult = row[16];
+        String child = row[17];
+        String infant = row[18];
+        String travelClass = row[19];
+
+        SearchFlightPage searchFlightPage = new SearchFlightPage(driver);
+
+        searchFlightPage.selectDirection(direction);
+        searchFlightPage.selectFromCity(inputFrom);
+        searchFlightPage.selectToCity(inputTo);
+
+        // Departure
+        String depError = getDateError(departureDate,
+                d -> searchFlightPage.selectDepartureDate(d.getDayOfMonth(), d.getMonth(), d.getYear()));
+
+        // Return
+        if (direction.equals("round-trip")) {
+            String retError = getDateError(returnDate,
+                    d -> searchFlightPage.selectReturnDate(d.getDayOfMonth(), d.getMonth(), d.getYear()));
+        }
+
+        // Multi-city
+        if (direction.equals("multi-city")) {
+            searchFlightPage.selectMultiFrom2City(multiFrom2);
+            searchFlightPage.selectMultiTo2City(multiTo2);
+
+            String multi2Error = getDateError(multiDeparture2,
+                    d -> searchFlightPage.selectMultiDeparture2(d.getDayOfMonth(), d.getMonth(), d.getYear()));
+
+            searchFlightPage.clickAddFlight();
+            searchFlightPage.selectMultiFrom3City(multiFrom3);
+            searchFlightPage.selectMultiTo3City(multiTo3);
+
+            String multi3Error = getDateError(multiDeparture3,
+                    d -> searchFlightPage.selectMultiDeparture3(d.getDayOfMonth(), d.getMonth(), d.getYear()));
+        }
+
+        // Passenger & class
+        searchFlightPage.openPassengerDropdown();
+        searchFlightPage.addAdult(Integer.parseInt(adult));
+        searchFlightPage.addChild(Integer.parseInt(child));
+        searchFlightPage.addInfant(Integer.parseInt(infant));
+        searchFlightPage.selectTravelClass(travelClass);
+
+        // Click search
+        searchFlightPage.clickSearchButton(direction);
     }
 }

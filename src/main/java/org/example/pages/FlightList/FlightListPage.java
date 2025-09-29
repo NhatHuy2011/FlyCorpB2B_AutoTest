@@ -18,8 +18,7 @@ public class FlightListPage {
 
     private final By resultContainer = By.id("js-search-result");
     private final By noFlightMessage = By.xpath("//div[@id='js-search-result' and contains(text(),'Không tìm thấy chuyến bay')]");
-    private final By cabinClassButtons = By.cssSelector(".btn-cabin-class");
-    private final By continueButtons = By.cssSelector("button.btn.btn-orange.vn-choose");
+    private final By nextPageButton = By.id("btn-next-page");
 
     public void waitForResult() {
         wait.until(ExpectedConditions.visibilityOfElementLocated(resultContainer));
@@ -40,25 +39,40 @@ public class FlightListPage {
         return null;
     }
 
-    public List<WebElement> getCabinClassButtons() {
-        return driver.findElements(cabinClassButtons);
+    private WebElement waitForCabinClassByKey(int key) {
+        WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(50));
+        return wait.until(ExpectedConditions.visibilityOfElementLocated(
+                By.cssSelector(".btn-cabin-class[data-key='" + key + "']")));
     }
 
-    public List<WebElement> getContinueButtons() {
-        return driver.findElements(continueButtons);
+    private WebElement waitForContinueButtonByKey(int key) {
+        WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(50));
+        return wait.until(ExpectedConditions.elementToBeClickable(
+                By.cssSelector("button.btn.btn-orange.vn-choose[data-key='" + key + "']")));
     }
 
-    public void clickCabinClassByIndex(int index) {
-        List<WebElement> buttons = getCabinClassButtons();
-        if (index >= 0 && index < buttons.size()) {
-            buttons.get(index).click();
+    public void clickCabinClassByKey(int key) {
+        waitForCabinClassByKey(key).click();
+    }
+
+    public void clickContinueButtonByKey(int key) {
+        waitForContinueButtonByKey(key).click();
+    }
+
+    public void selectFlights(int legs, List<Integer> keys) {
+        for (int i = 0; i < legs; i++) {
+            waitForResult();
+            if (hasNoFlights()) {
+                return;
+            }
+            int key = keys.get(i);
+            clickCabinClassByKey(key);
+            clickContinueButtonByKey(key);
         }
     }
 
-    public void clickContinueButtonByIndex(int index) {
-        List<WebElement> buttons = getContinueButtons();
-        if (index >= 0 && index < buttons.size()) {
-            buttons.get(index).click();
-        }
+
+    public void clickNextPage() {
+        driver.findElement(nextPageButton).click();
     }
 }
