@@ -1,6 +1,7 @@
-package org.example.test.FlightList;
+package org.example.test.ContactInfo;
 
 import org.example.constant.Constant;
+import org.example.pages.ContactInfo.ContactInfoPage;
 import org.example.pages.FlightList.FlightListPage;
 import org.example.runner.SearchFlight.SearchFlightRunTestcase;
 import org.example.utils.ConfigReader;
@@ -15,7 +16,7 @@ import org.openqa.selenium.chrome.ChromeDriver;
 import java.time.Duration;
 import java.util.List;
 
-public class FlightListTest {
+public class ContactInfoTest {
     private WebDriver driver;
 
     @BeforeEach
@@ -36,7 +37,7 @@ public class FlightListTest {
     }
 
     @Test
-    public void testFlightListOneWay() throws Exception {
+    public void testBookingOneWay() throws Exception {
         //Search Flight
         List<String[]> testDataSearch = ExcelUtils.readExcel(Constant.EXCEL_FILE_PATH, Constant.EXCEL_SEARCHFLIGHT_SHEET);
         int indexSearchFlight = 1;
@@ -48,13 +49,30 @@ public class FlightListTest {
         int indexFlightList = 1;
         String[] rowFlightList = testDataFlightList.get(indexFlightList);
         String oneWayIndex = rowFlightList[4];
+        FlightListPage resultPage = new FlightListPage(driver);
+        resultPage.selectFlights(1, List.of(Integer.parseInt(oneWayIndex)));
 
-        try {
-            FlightListPage resultPage = new FlightListPage(driver);
-            resultPage.selectFlights(1, List.of(Integer.parseInt(oneWayIndex)));
-        } catch (Exception e){
-            System.out.println("Exception: " + e);
-        }
+        //ContactInfo and Booking
+        ContactInfoPage form = new ContactInfoPage(driver);
+        form.setAdultLastName0("Nguyen");
+        form.setAdultFirstName0("Van A");
+        form.selectAdultTitle0("1"); // MR
+        form.setAdultDob0();
+        form.selectAdultNationality0("VN");
+        form.setAdultPassport0("B12345678");
+        form.selectAdultPassportNation0("VN");
+        //form.setAdultIssueDate0();
+        //form.setAdultExpiredDate0();
+
+        // Fill contact
+        form.setContactLastName("Nguyen");
+        Thread.sleep(1000);
+        form.setContactFirstName("Van A");
+        Thread.sleep(1000);
+
+        form.clickBooking();
+        form.clickConfirmButton();
+        Thread.sleep(5000);
     }
 
     @Test
