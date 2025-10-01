@@ -49,12 +49,11 @@ public class FlightListTest {
         String[] rowFlightList = testDataFlightList.get(indexFlightList);
         String oneWayIndex = rowFlightList[4];
 
-        try {
-            FlightListPage resultPage = new FlightListPage(driver);
-            resultPage.selectFlights(1, List.of(Integer.parseInt(oneWayIndex)));
-        } catch (Exception e){
-            System.out.println("Exception: " + e);
-        }
+        FlightListPage resultPage = new FlightListPage(driver);
+
+        String actualMessage = resultPage.selectFlights(1, List.of(Integer.parseInt(oneWayIndex)));
+
+        System.out.println(actualMessage);
     }
 
     @Test
@@ -73,12 +72,19 @@ public class FlightListTest {
         String roundTripIndex2 = rowFlightList[6];
 
         FlightListPage resultPage = new FlightListPage(driver);
-        resultPage.selectFlights(2, List.of(
+        resultPage.waitForResult();
+
+        String actualMessage = resultPage.selectFlights(2, List.of(
                 Integer.parseInt(roundTripIndex1),
                 Integer.parseInt(roundTripIndex2)
         ));
-        resultPage.clickNextPage();
-        Thread.sleep(5000);
+
+        if(actualMessage.equals("Pass")){
+            resultPage.clickNextPage();
+            Thread.sleep(5000);
+        }
+
+        System.out.println(actualMessage);
     }
 
     @Test
@@ -98,13 +104,20 @@ public class FlightListTest {
         String multiCityIndex3 = rowFlightList[9];
 
         FlightListPage resultPage = new FlightListPage(driver);
-        resultPage.selectFlights(3, List.of(
+        resultPage.waitForResult();
+
+        String actualMessage = resultPage.selectFlights(3, List.of(
                 Integer.parseInt(multiCityIndex1),
                 Integer.parseInt(multiCityIndex2),
                 Integer.parseInt(multiCityIndex3)
         ));
-        resultPage.clickNextPage();
-        Thread.sleep(5000);
+
+        if(actualMessage.equals("Pass")){
+            resultPage.clickNextPage();
+            Thread.sleep(5000);
+        }
+
+        System.out.println(actualMessage);
     }
 
     @AfterEach

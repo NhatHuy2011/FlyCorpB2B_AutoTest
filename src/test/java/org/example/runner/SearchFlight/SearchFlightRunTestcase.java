@@ -1,5 +1,6 @@
 package org.example.runner.SearchFlight;
 
+import org.example.common.TestResult;
 import org.example.pages.SearchFlight.SearchFlightPage;
 import org.openqa.selenium.WebDriver;
 
@@ -9,20 +10,9 @@ import java.util.List;
 import java.util.function.Function;
 
 public class SearchFlightRunTestcase {
-
-    public static class TestResult {
-        public final String actualMessage;
-        public final boolean isPassed;
-
-        public TestResult(String actualMessage, boolean isPassed) {
-            this.actualMessage = actualMessage;
-            this.isPassed = isPassed;
-        }
-    }
-
     private static final DateTimeFormatter FORMATTER = DateTimeFormatter.ofPattern("dd/MM/yyyy");
 
-    public static TestResult validateSearch(WebDriver driver, String[] row) throws Exception {
+    public TestResult validateSearch(WebDriver driver, String[] row) throws Exception {
         String direction = row[4];
         String inputFrom = row[5];
         String inputTo = row[6];

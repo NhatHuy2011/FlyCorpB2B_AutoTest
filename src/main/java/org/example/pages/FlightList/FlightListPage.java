@@ -25,13 +25,11 @@ public class FlightListPage {
     }
 
     public boolean hasNoFlights() {
-        try {
-            return driver.findElement(noFlightMessage).isDisplayed();
-        } catch (NoSuchElementException e) {
-            return false;
-        }
+        List<WebElement> flights = driver.findElements(By.cssSelector("#js-search-result .flight-item"));
+        return flights.isEmpty();
     }
 
+    // Lấy thông báo khi không có chuyến bay
     public String getNoFlightMessage() {
         if (hasNoFlights()) {
             return driver.findElement(noFlightMessage).getText().trim();
@@ -40,13 +38,13 @@ public class FlightListPage {
     }
 
     private WebElement waitForCabinClassByKey(int key) {
-        WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(50));
+        WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(20));
         return wait.until(ExpectedConditions.visibilityOfElementLocated(
                 By.cssSelector(".btn-cabin-class[data-key='" + key + "']")));
     }
 
     private WebElement waitForContinueButtonByKey(int key) {
-        WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(50));
+        WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(20));
         return wait.until(ExpectedConditions.elementToBeClickable(
                 By.cssSelector("button.btn.btn-orange.vn-choose[data-key='" + key + "']")));
     }
@@ -59,18 +57,18 @@ public class FlightListPage {
         waitForContinueButtonByKey(key).click();
     }
 
-    public void selectFlights(int legs, List<Integer> keys) {
-        for (int i = 0; i < legs; i++) {
+    public String selectFlights(int step, List<Integer> keys) {
+        for (int i = 1; i <= step; i++) {
             waitForResult();
-            if (hasNoFlights()) {
-                return;
+            if(hasNoFlights()){
+                return getNoFlightMessage() + " ở step " + i;
             }
             int key = keys.get(i);
             clickCabinClassByKey(key);
             clickContinueButtonByKey(key);
         }
+        return "Pass";
     }
-
 
     public void clickNextPage() {
         driver.findElement(nextPageButton).click();
