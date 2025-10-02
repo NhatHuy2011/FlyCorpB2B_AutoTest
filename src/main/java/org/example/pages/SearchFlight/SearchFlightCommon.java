@@ -31,28 +31,46 @@ public class SearchFlightCommon {
             String monthYearText = calendar.findElement(monthLabel).getText().trim();
 
             String[] parts = monthYearText.split(" ");
-            if (parts.length < 2) return "Không cho phép chọn";
+            if (parts.length < 2) {
+                return String.format("Không cho phép chọn: %02d/%02d/%d", day, month.getValue(), year);
+            }
 
             DateTimeFormatter monthFormatter = DateTimeFormatter.ofPattern("MMM", Locale.ENGLISH);
             Month currentMonth = Month.from(monthFormatter.parse(parts[0]));
             int currentYear = Integer.parseInt(parts[1]);
 
+            // Nếu trùng với tháng/năm cần chọn
             if (currentYear == year && currentMonth == month) {
                 break;
-            } else if (currentYear < year || (currentYear == year && currentMonth.getValue() < month.getValue())) {
+            }
+
+            if (currentYear < year || (currentYear == year && currentMonth.getValue() < month.getValue())) {
                 calendar.findElement(nextButton).click();
-            } else {
+            }
+            else {
+                if (calendar.findElements(prevButton).isEmpty()) {
+                    return String.format(
+                            "Không cho phép chọn %02d/%02d/%d",
+                            day, month.getValue(), year
+                    );
+                }
                 calendar.findElement(prevButton).click();
             }
+
+            // Refresh calendar sau khi click
+            calendar = waitForCalendar();
         }
 
+        // Chọn ngày
         for (WebElement date : calendar.findElements(availableDates)) {
             if (date.getText().equals(String.valueOf(day))) {
                 date.click();
                 return "";
             }
         }
-        return "Không cho phép chọn";
+
+        return String.format("Không cho phép chọn %02d/%02d/%d",
+                day, month.getValue(), year);
     }
 
     private WebElement waitForCalendar() {

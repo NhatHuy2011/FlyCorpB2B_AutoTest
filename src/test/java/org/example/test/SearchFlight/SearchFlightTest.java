@@ -40,7 +40,11 @@ public class SearchFlightTest {
             String[] row = testData.get(i);
             SearchFlightRunTestcase searchFlightRunTestcase = new SearchFlightRunTestcase();
             TestResult result = searchFlightRunTestcase.validateSearch(driver, row);
-            WriteResultExcel.writeResultExcel(Constant.EXCEL_SEARCHFLIGHT_SHEET, i + 2, result, 21, 22);
+            WriteResultExcel.writeResultExcel(Constant.EXCEL_SEARCHFLIGHT_SHEET,
+                    i + 2,
+                    result,
+                    Constant.EXCEL_SEARCHFLIGHT_SHEET_ACTUALINDEX,
+                    Constant.EXCEL_SEARCHFLIGHT_SHEET_STATUS);
             driver.get(ConfigReader.getUrl());
         }
     }
@@ -48,11 +52,15 @@ public class SearchFlightTest {
     @Test
     public void testSearchFlightRoundTrip() throws Exception {
         List<String[]> testData = ExcelUtils.readExcel(Constant.EXCEL_FILE_PATH, Constant.EXCEL_SEARCHFLIGHT_SHEET);
-        for (int i = 7; i <= 9; i++) {
+        for (int i = 7; i <= 10; i++) {
             String[] row = testData.get(i);
             SearchFlightRunTestcase searchFlightRunTestcase = new SearchFlightRunTestcase();
             TestResult result = searchFlightRunTestcase.validateSearch(driver, row);
-            WriteResultExcel.writeResultExcel(Constant.EXCEL_SEARCHFLIGHT_SHEET, i + 2, result, 21, 22);
+            WriteResultExcel.writeResultExcel(Constant.EXCEL_SEARCHFLIGHT_SHEET,
+                    i + 2,
+                    result,
+                    Constant.EXCEL_SEARCHFLIGHT_SHEET_ACTUALINDEX,
+                    Constant.EXCEL_SEARCHFLIGHT_SHEET_STATUS);
             driver.get(ConfigReader.getUrl());
         }
     }
@@ -64,19 +72,27 @@ public class SearchFlightTest {
             String[] row = testData.get(i);
             SearchFlightRunTestcase searchFlightRunTestcase = new SearchFlightRunTestcase();
             TestResult result = searchFlightRunTestcase.validateSearch(driver, row);
-            WriteResultExcel.writeResultExcel(Constant.EXCEL_SEARCHFLIGHT_SHEET, i + 2, result, 21, 22);
+            WriteResultExcel.writeResultExcel(Constant.EXCEL_SEARCHFLIGHT_SHEET,
+                    i + 2,
+                    result,
+                    Constant.EXCEL_SEARCHFLIGHT_SHEET_ACTUALINDEX,
+                    Constant.EXCEL_SEARCHFLIGHT_SHEET_STATUS);
             driver.get(ConfigReader.getUrl());
         }
     }
 
     @Test
     public void testOneSearchFlight() throws Exception {
-        int targetRowIndex = 12;
+        int targetRowIndex = 10;
         List<String[]> testData = ExcelUtils.readExcel(Constant.EXCEL_FILE_PATH, Constant.EXCEL_SEARCHFLIGHT_SHEET);
         String[] row = testData.get(targetRowIndex);
         SearchFlightRunTestcase searchFlightRunTestcase = new SearchFlightRunTestcase();
         TestResult result = searchFlightRunTestcase.validateSearch(driver, row);
-        WriteResultExcel.writeResultExcel(Constant.EXCEL_SEARCHFLIGHT_SHEET, targetRowIndex + 2, result, 21, 22);
+        WriteResultExcel.writeResultExcel(Constant.EXCEL_SEARCHFLIGHT_SHEET,
+                targetRowIndex + 2,
+                result,
+                Constant.EXCEL_SEARCHFLIGHT_SHEET_ACTUALINDEX,
+                Constant.EXCEL_SEARCHFLIGHT_SHEET_STATUS);
     }
 
     @AfterEach
