@@ -1,5 +1,6 @@
 package org.example.pages.FlightList;
 
+import org.example.utils.ConfigReader;
 import org.openqa.selenium.*;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
@@ -58,10 +59,10 @@ public class FlightListPage {
     }
 
     public String selectFlights(int step, List<Integer> keys) {
-        for (int i = 1; i <= step; i++) {
+        for (int i = 0; i < step; i++) {
             waitForResult();
             if(hasNoFlights()){
-                return getNoFlightMessage() + " ở step " + i;
+                return getNoFlightMessage() + " ở step " + (i + 1);
             }
             int key = keys.get(i);
             clickCabinClassByKey(key);
@@ -70,7 +71,8 @@ public class FlightListPage {
         return "Pass";
     }
 
-    public void clickNextPage() {
+    public boolean clickNextPage() {
         driver.findElement(nextPageButton).click();
+        return wait.until(ExpectedConditions.urlToBe(ConfigReader.getUrlOffer()));
     }
 }

@@ -7,4 +7,6 @@ public class Constant {
     public static final int EXCEL_SEARCHFLIGHT_SHEET_ACTUALINDEX = 21;
     public static final int EXCEL_SEARCHFLIGHT_SHEET_STATUS = 22;
     public static final String EXCEL_FLIGHTLIST_SHEET = "FlightList";
+    public static final int EXCEL_FLIGHTLIST_SHEET_ACTUALINDEX = 11;
+    public static final int EXCEL_FLIGHTLIST_SHEET_STATUS = 12;
 }

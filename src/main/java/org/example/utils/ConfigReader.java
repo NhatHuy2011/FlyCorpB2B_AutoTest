@@ -21,6 +21,10 @@ public class ConfigReader {
         return properties.getProperty("url");
     }
 
+    public static String getUrlOffer(){
+        return properties.getProperty("url_offer");
+    }
+
     public static String getCookiesAgencySessionName(){
         return properties.getProperty("cookies.agency_session.name");
     }

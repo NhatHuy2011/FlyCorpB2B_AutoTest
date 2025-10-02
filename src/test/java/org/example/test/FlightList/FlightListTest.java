@@ -1,5 +1,7 @@
 package org.example.test.FlightList;
 
+import org.example.common.TestResult;
+import org.example.common.WriteResultExcel;
 import org.example.constant.Constant;
 import org.example.pages.FlightList.FlightListPage;
 import org.example.runner.SearchFlight.SearchFlightRunTestcase;
@@ -44,28 +46,46 @@ public class FlightListTest {
         SearchFlightRunTestcase.doSearch(driver, rowSearch);
 
         //Flight List
-        List<String[]> testDataFlightList = ExcelUtils.readExcel(Constant.EXCEL_FILE_PATH, Constant.EXCEL_FLIGHTLIST_SHEET);
+        List<String[]> testDataFlightList = ExcelUtils.readExcel(Constant.EXCEL_FILE_PATH,
+                Constant.EXCEL_FLIGHTLIST_SHEET);
         int indexFlightList = 1;
         String[] rowFlightList = testDataFlightList.get(indexFlightList);
         String oneWayIndex = rowFlightList[4];
 
         FlightListPage resultPage = new FlightListPage(driver);
 
-        String actualMessage = resultPage.selectFlights(1, List.of(Integer.parseInt(oneWayIndex)));
+        String resultMessage = resultPage.selectFlights(1, List.of(Integer.parseInt(oneWayIndex)));
 
-        System.out.println(actualMessage);
+        boolean isPassed = true;
+
+        String actualMessage = "";
+        if (resultMessage.equals("Pass")){
+            actualMessage = "Hiện form thông tin liên lạc";
+        } else {
+            actualMessage = resultMessage;
+        }
+
+        TestResult testResult = new TestResult(actualMessage, isPassed);
+
+        WriteResultExcel.writeResultExcel(Constant.EXCEL_FLIGHTLIST_SHEET,
+                indexFlightList + 2,
+                testResult,
+                Constant.EXCEL_FLIGHTLIST_SHEET_ACTUALINDEX,
+                Constant.EXCEL_FLIGHTLIST_SHEET_STATUS);
     }
 
     @Test
     public void testFlightListRoundTrip() throws Exception {
         //Search Flight
-        List<String[]> testDataSearch = ExcelUtils.readExcel(Constant.EXCEL_FILE_PATH, Constant.EXCEL_SEARCHFLIGHT_SHEET);
+        List<String[]> testDataSearch = ExcelUtils.readExcel(Constant.EXCEL_FILE_PATH,
+                Constant.EXCEL_SEARCHFLIGHT_SHEET);
         int indexSearchFlight = 7;
         String[] rowSearch = testDataSearch.get(indexSearchFlight);
         SearchFlightRunTestcase.doSearch(driver, rowSearch);
 
         //Flight List
-        List<String[]> testDataFlightList = ExcelUtils.readExcel(Constant.EXCEL_FILE_PATH, Constant.EXCEL_FLIGHTLIST_SHEET);
+        List<String[]> testDataFlightList = ExcelUtils.readExcel(Constant.EXCEL_FILE_PATH,
+                Constant.EXCEL_FLIGHTLIST_SHEET);
         int indexFlightList = 3;
         String[] rowFlightList = testDataFlightList.get(indexFlightList);
         String roundTripIndex1 = rowFlightList[5];
@@ -74,29 +94,45 @@ public class FlightListTest {
         FlightListPage resultPage = new FlightListPage(driver);
         resultPage.waitForResult();
 
-        String actualMessage = resultPage.selectFlights(2, List.of(
+        String resultMessage = resultPage.selectFlights(2, List.of(
                 Integer.parseInt(roundTripIndex1),
                 Integer.parseInt(roundTripIndex2)
         ));
 
-        if(actualMessage.equals("Pass")){
-            resultPage.clickNextPage();
-            Thread.sleep(5000);
+        String actualMessage = "";
+
+        if(resultMessage.equals("Pass")){
+            boolean result = resultPage.clickNextPage();
+            if(result){
+                actualMessage = "Hiện form thông tin liên lạc";
+            }else {
+                actualMessage = resultMessage;
+            }
         }
 
-        System.out.println(actualMessage);
+        boolean isPassed = true;
+
+        TestResult testResult = new TestResult(actualMessage, isPassed);
+
+        WriteResultExcel.writeResultExcel(Constant.EXCEL_FLIGHTLIST_SHEET,
+                indexFlightList + 2,
+                testResult,
+                Constant.EXCEL_FLIGHTLIST_SHEET_ACTUALINDEX,
+                Constant.EXCEL_FLIGHTLIST_SHEET_STATUS);
     }
 
     @Test
     public void testFlightListMultiCity() throws Exception {
         //Search Flight
-        List<String[]> testDataSearch = ExcelUtils.readExcel(Constant.EXCEL_FILE_PATH, Constant.EXCEL_SEARCHFLIGHT_SHEET);
+        List<String[]> testDataSearch = ExcelUtils.readExcel(Constant.EXCEL_FILE_PATH,
+                Constant.EXCEL_SEARCHFLIGHT_SHEET);
         int indexSearchFlight = 12;
         String[] rowSearch = testDataSearch.get(indexSearchFlight);
         SearchFlightRunTestcase.doSearch(driver, rowSearch);
 
         //Flight List
-        List<String[]> testDataFlightList = ExcelUtils.readExcel(Constant.EXCEL_FILE_PATH, Constant.EXCEL_FLIGHTLIST_SHEET);
+        List<String[]> testDataFlightList = ExcelUtils.readExcel(Constant.EXCEL_FILE_PATH,
+                Constant.EXCEL_FLIGHTLIST_SHEET);
         int indexFlightList = 5;
         String[] rowFlightList = testDataFlightList.get(indexFlightList);
         String multiCityIndex1 = rowFlightList[7];
@@ -106,18 +142,31 @@ public class FlightListTest {
         FlightListPage resultPage = new FlightListPage(driver);
         resultPage.waitForResult();
 
-        String actualMessage = resultPage.selectFlights(3, List.of(
+        String resultMessage = resultPage.selectFlights(3, List.of(
                 Integer.parseInt(multiCityIndex1),
                 Integer.parseInt(multiCityIndex2),
                 Integer.parseInt(multiCityIndex3)
         ));
 
-        if(actualMessage.equals("Pass")){
-            resultPage.clickNextPage();
-            Thread.sleep(5000);
+        String actualMessage = "";
+        if(resultMessage.equals("Pass")){
+            boolean result = resultPage.clickNextPage();
+            if(result){
+                actualMessage = "Hiện form thông tin liên lạc";
+            }else {
+                actualMessage = resultMessage;
+            }
         }
 
-        System.out.println(actualMessage);
+        boolean isPassed = true;
+
+        TestResult testResult = new TestResult(actualMessage, isPassed);
+
+        WriteResultExcel.writeResultExcel(Constant.EXCEL_FLIGHTLIST_SHEET,
+                indexFlightList + 2,
+                testResult,
+                Constant.EXCEL_FLIGHTLIST_SHEET_ACTUALINDEX,
+                Constant.EXCEL_FLIGHTLIST_SHEET_STATUS);
     }
 
     @AfterEach
