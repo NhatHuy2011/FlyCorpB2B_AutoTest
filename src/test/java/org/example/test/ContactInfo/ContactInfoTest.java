@@ -1,12 +1,8 @@
 package org.example.test.ContactInfo;
 
-import org.example.constant.Constant;
 import org.example.pages.ContactInfo.ContactInfoPage;
-import org.example.pages.FlightList.FlightListPage;
 import org.example.runner.FlightList.FlightListRunTestCase;
-import org.example.runner.SearchFlight.SearchFlightRunTestcase;
 import org.example.utils.ConfigReader;
-import org.example.utils.ExcelUtils;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -15,7 +11,6 @@ import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
 
 import java.time.Duration;
-import java.util.List;
 
 public class ContactInfoTest {
     private WebDriver driver;
@@ -46,13 +41,18 @@ public class ContactInfoTest {
             form.setAdultLastName0("Nguyen");
             form.setAdultFirstName0("Van A");
             form.selectAdultTitle0("1"); // MR
+            form.selectBirthday(2011, 9, 9);
             form.selectAdultNationality0("AF");
             form.setAdultPassport0("B12345678");
             form.selectAdultPassportNation0("BS");
+            form.selectIssueDate(2021, 11, 10);
+            form.selectExpiryDate(2032, 2, 5);
 
             form.setContactLastName("Nguyen");
             Thread.sleep(1000);
             form.setContactFirstName("Van A");
+            Thread.sleep(1000);
+            form.selectPhoneCountryCode("Vietnam");
             Thread.sleep(1000);
             form.setContactPhone("363437324");
             Thread.sleep(1000);
