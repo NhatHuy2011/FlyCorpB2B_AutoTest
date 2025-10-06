@@ -1,8 +1,12 @@
 package org.example.test.ContactInfo;
 
+import org.example.constant.Constant;
+import org.example.enums.PassengerType;
 import org.example.pages.ContactInfo.ContactInfoPage;
+import org.example.pages.ContactInfo.PassengerForm;
 import org.example.runner.FlightList.FlightListRunTestCase;
 import org.example.utils.ConfigReader;
+import org.example.utils.ExcelUtils;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -11,6 +15,7 @@ import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
 
 import java.time.Duration;
+import java.util.List;
 
 public class ContactInfoTest {
     private WebDriver driver;
@@ -33,31 +38,98 @@ public class ContactInfoTest {
     }
 
     @Test
-    public void testBookingOneWay() throws Exception {
+    public void testBookingOneWayMultiplePassenger() throws Exception {
         FlightListRunTestCase flightListRunTestCase = new FlightListRunTestCase();
         String flightListMessage = flightListRunTestCase.flightListOneWay(driver);
-        if(flightListMessage.equals("Pass")){
-            ContactInfoPage form = new ContactInfoPage(driver);
-            form.setAdultLastName0("Nguyen");
-            form.setAdultFirstName0("Van A");
-            form.selectAdultTitle0("1"); // MR
-            form.selectBirthday(2011, 9, 9);
-            form.selectAdultNationality0("AF");
-            form.setAdultPassport0("B12345678");
-            form.selectAdultPassportNation0("BS");
-            form.selectIssueDate(2021, 11, 10);
-            form.selectExpiryDate(2032, 2, 5);
+        List<String[]> testDataPassengerInfo = ExcelUtils.readExcel(Constant.EXCEL_FILE_PATH, Constant.EXCEL_PASSENGERINFO_SHEET);
+        List<String[]> testDataContactInfo = ExcelUtils.readExcel(Constant.EXCEL_FILE_PATH, Constant.EXCEL_CONTACTINFO_SHEET);
 
-            form.setContactLastName("Nguyen");
-            Thread.sleep(1000);
-            form.setContactFirstName("Van A");
-            Thread.sleep(1000);
-            form.selectPhoneCountryCode("Vietnam");
-            Thread.sleep(1000);
-            form.setContactPhone("363437324");
-            Thread.sleep(1000);
-            form.clickBooking();
-            form.clickConfirmButton();
+        if(flightListMessage.equals("Pass")){
+            ContactInfoPage contactInfoPage = new ContactInfoPage(driver);
+            PassengerForm form = contactInfoPage.passengers();
+
+            //Adult Info
+            for(int i=1; i<=2; i++){
+                String[] row = testDataPassengerInfo.get(i);
+                form.setLastName(PassengerType.valueOf(row[4].toUpperCase()), Integer.parseInt(row[5]), row[6]);
+                Thread.sleep(1000);
+                form.setFirstName(PassengerType.valueOf(row[4].toUpperCase()), Integer.parseInt(row[5]), row[7]);
+                Thread.sleep(1000);
+                form.selectTitle(PassengerType.valueOf(row[4].toUpperCase()), Integer.parseInt(row[5]), row[8]);
+                Thread.sleep(1000);
+                form.selectBirthday(PassengerType.valueOf(row[4].toUpperCase()), Integer.parseInt(row[5]),
+                        Integer.parseInt(row[9]), Integer.parseInt(row[10]), Integer.parseInt(row[11]));
+                Thread.sleep(1000);
+                form.selectNationality(PassengerType.valueOf(row[4].toUpperCase()), Integer.parseInt(row[5]), row[12]);
+                Thread.sleep(1000);
+                form.setPassport(PassengerType.valueOf(row[4].toUpperCase()), Integer.parseInt(row[5]), row[13]);
+                Thread.sleep(1000);
+                form.selectNation(PassengerType.valueOf(row[4].toUpperCase()), Integer.parseInt(row[5]), row[14]);
+                Thread.sleep(1000);
+                form.selectIssueDate(PassengerType.valueOf(row[4].toUpperCase()), Integer.parseInt(row[5]),
+                        Integer.parseInt(row[15]), Integer.parseInt(row[16]), Integer.parseInt(row[17]));
+                Thread.sleep(1000);
+                form.selectExpiryDate(PassengerType.valueOf(row[4].toUpperCase()), Integer.parseInt(row[5]),
+                        Integer.parseInt(row[18]), Integer.parseInt(row[19]), Integer.parseInt(row[20]));
+                Thread.sleep(1000);
+            }
+
+            //Children Info
+            for(int i=4; i<=5; i++){
+                String[] row = testDataPassengerInfo.get(i);
+                form.setLastName(PassengerType.valueOf(row[4].toUpperCase()), Integer.parseInt(row[5]), row[6]);
+                Thread.sleep(1000);
+                form.setFirstName(PassengerType.valueOf(row[4].toUpperCase()), Integer.parseInt(row[5]), row[7]);
+                Thread.sleep(1000);
+                form.selectTitle(PassengerType.valueOf(row[4].toUpperCase()), Integer.parseInt(row[5]), row[8]);
+                Thread.sleep(1000);
+                form.selectBirthday(PassengerType.valueOf(row[4].toUpperCase()), Integer.parseInt(row[5]),
+                        Integer.parseInt(row[9]), Integer.parseInt(row[10]), Integer.parseInt(row[11]));
+                Thread.sleep(1000);
+                form.selectNationality(PassengerType.valueOf(row[4].toUpperCase()), Integer.parseInt(row[5]), row[12]);
+                Thread.sleep(1000);
+                form.setPassport(PassengerType.valueOf(row[4].toUpperCase()), Integer.parseInt(row[5]), row[13]);
+                Thread.sleep(1000);
+                form.selectNation(PassengerType.valueOf(row[4].toUpperCase()), Integer.parseInt(row[5]), row[14]);
+                Thread.sleep(1000);
+                form.selectIssueDate(PassengerType.valueOf(row[4].toUpperCase()), Integer.parseInt(row[5]),
+                        Integer.parseInt(row[15]), Integer.parseInt(row[16]), Integer.parseInt(row[17]));
+                Thread.sleep(1000);
+                form.selectExpiryDate(PassengerType.valueOf(row[4].toUpperCase()), Integer.parseInt(row[5]),
+                        Integer.parseInt(row[18]), Integer.parseInt(row[19]), Integer.parseInt(row[20]));
+                Thread.sleep(1000);
+            }
+
+            //Infant
+            for(int i=7; i<=8; i++){
+                String[] row = testDataPassengerInfo.get(i);
+                form.setLastName(PassengerType.valueOf(row[4].toUpperCase()), Integer.parseInt(row[5]), row[6]);
+                Thread.sleep(1000);
+                form.setFirstName(PassengerType.valueOf(row[4].toUpperCase()), Integer.parseInt(row[5]), row[7]);
+                Thread.sleep(1000);
+                form.selectTitle(PassengerType.valueOf(row[4].toUpperCase()), Integer.parseInt(row[5]), row[8]);
+                Thread.sleep(1000);
+                form.selectBirthday(PassengerType.valueOf(row[4].toUpperCase()), Integer.parseInt(row[5]),
+                        Integer.parseInt(row[9]), Integer.parseInt(row[10]), Integer.parseInt(row[11]));
+                Thread.sleep(1000);
+                form.selectNationality(PassengerType.valueOf(row[4].toUpperCase()), Integer.parseInt(row[5]), row[12]);
+                Thread.sleep(1000);
+                form.setPassport(PassengerType.valueOf(row[4].toUpperCase()), Integer.parseInt(row[5]), row[13]);
+                Thread.sleep(1000);
+                form.selectNation(PassengerType.valueOf(row[4].toUpperCase()), Integer.parseInt(row[5]), row[14]);
+                Thread.sleep(1000);
+                form.selectIssueDate(PassengerType.valueOf(row[4].toUpperCase()), Integer.parseInt(row[5]),
+                        Integer.parseInt(row[15]), Integer.parseInt(row[16]), Integer.parseInt(row[17]));
+                Thread.sleep(1000);
+                form.selectExpiryDate(PassengerType.valueOf(row[4].toUpperCase()), Integer.parseInt(row[5]),
+                        Integer.parseInt(row[18]), Integer.parseInt(row[19]), Integer.parseInt(row[20]));
+                Thread.sleep(1000);
+            }
+
+            String[] rowContact = testDataContactInfo.getFirst();
+            contactInfoPage.setContactInfo(rowContact[4], rowContact[5], rowContact[6], rowContact[7]);
+            //contactInfoPage.clickBooking();
+            //contactInfoPage.clickConfirmButton();
             Thread.sleep(5000);
         }
     }
