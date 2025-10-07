@@ -52,20 +52,14 @@ public class ContactInfoTest {
             for(int i=1; i<=2; i++){
                 String[] row = testDataPassengerInfo.get(i);
                 form.setLastName(PassengerType.valueOf(row[4].toUpperCase()), Integer.parseInt(row[5]), row[6]);
-                Thread.sleep(1000);
                 form.setFirstName(PassengerType.valueOf(row[4].toUpperCase()), Integer.parseInt(row[5]), row[7]);
-                Thread.sleep(1000);
                 form.selectTitle(PassengerType.valueOf(row[4].toUpperCase()), Integer.parseInt(row[5]), row[8]);
-                Thread.sleep(1000);
                 form.selectBirthday(PassengerType.valueOf(row[4].toUpperCase()), Integer.parseInt(row[5]),
                         Integer.parseInt(row[9]), Integer.parseInt(row[10]), Integer.parseInt(row[11]));
                 Thread.sleep(1000);
                 form.selectNationality(PassengerType.valueOf(row[4].toUpperCase()), Integer.parseInt(row[5]), row[12]);
-                Thread.sleep(1000);
                 form.setPassport(PassengerType.valueOf(row[4].toUpperCase()), Integer.parseInt(row[5]), row[13]);
-                Thread.sleep(1000);
                 form.selectNation(PassengerType.valueOf(row[4].toUpperCase()), Integer.parseInt(row[5]), row[14]);
-                Thread.sleep(1000);
                 form.selectIssueDate(PassengerType.valueOf(row[4].toUpperCase()), Integer.parseInt(row[5]),
                         Integer.parseInt(row[15]), Integer.parseInt(row[16]), Integer.parseInt(row[17]));
                 Thread.sleep(1000);
@@ -78,20 +72,14 @@ public class ContactInfoTest {
             for(int i=4; i<=5; i++){
                 String[] row = testDataPassengerInfo.get(i);
                 form.setLastName(PassengerType.valueOf(row[4].toUpperCase()), Integer.parseInt(row[5]), row[6]);
-                Thread.sleep(1000);
                 form.setFirstName(PassengerType.valueOf(row[4].toUpperCase()), Integer.parseInt(row[5]), row[7]);
-                Thread.sleep(1000);
                 form.selectTitle(PassengerType.valueOf(row[4].toUpperCase()), Integer.parseInt(row[5]), row[8]);
-                Thread.sleep(1000);
                 form.selectBirthday(PassengerType.valueOf(row[4].toUpperCase()), Integer.parseInt(row[5]),
                         Integer.parseInt(row[9]), Integer.parseInt(row[10]), Integer.parseInt(row[11]));
                 Thread.sleep(1000);
                 form.selectNationality(PassengerType.valueOf(row[4].toUpperCase()), Integer.parseInt(row[5]), row[12]);
-                Thread.sleep(1000);
                 form.setPassport(PassengerType.valueOf(row[4].toUpperCase()), Integer.parseInt(row[5]), row[13]);
-                Thread.sleep(1000);
                 form.selectNation(PassengerType.valueOf(row[4].toUpperCase()), Integer.parseInt(row[5]), row[14]);
-                Thread.sleep(1000);
                 form.selectIssueDate(PassengerType.valueOf(row[4].toUpperCase()), Integer.parseInt(row[5]),
                         Integer.parseInt(row[15]), Integer.parseInt(row[16]), Integer.parseInt(row[17]));
                 Thread.sleep(1000);
@@ -104,20 +92,14 @@ public class ContactInfoTest {
             for(int i=7; i<=8; i++){
                 String[] row = testDataPassengerInfo.get(i);
                 form.setLastName(PassengerType.valueOf(row[4].toUpperCase()), Integer.parseInt(row[5]), row[6]);
-                Thread.sleep(1000);
                 form.setFirstName(PassengerType.valueOf(row[4].toUpperCase()), Integer.parseInt(row[5]), row[7]);
-                Thread.sleep(1000);
                 form.selectTitle(PassengerType.valueOf(row[4].toUpperCase()), Integer.parseInt(row[5]), row[8]);
-                Thread.sleep(1000);
                 form.selectBirthday(PassengerType.valueOf(row[4].toUpperCase()), Integer.parseInt(row[5]),
                         Integer.parseInt(row[9]), Integer.parseInt(row[10]), Integer.parseInt(row[11]));
                 Thread.sleep(1000);
                 form.selectNationality(PassengerType.valueOf(row[4].toUpperCase()), Integer.parseInt(row[5]), row[12]);
-                Thread.sleep(1000);
                 form.setPassport(PassengerType.valueOf(row[4].toUpperCase()), Integer.parseInt(row[5]), row[13]);
-                Thread.sleep(1000);
                 form.selectNation(PassengerType.valueOf(row[4].toUpperCase()), Integer.parseInt(row[5]), row[14]);
-                Thread.sleep(1000);
                 form.selectIssueDate(PassengerType.valueOf(row[4].toUpperCase()), Integer.parseInt(row[5]),
                         Integer.parseInt(row[15]), Integer.parseInt(row[16]), Integer.parseInt(row[17]));
                 Thread.sleep(1000);
@@ -126,11 +108,12 @@ public class ContactInfoTest {
                 Thread.sleep(1000);
             }
 
-            String[] rowContact = testDataContactInfo.getFirst();
+            String[] rowContact = testDataContactInfo.get(0);
             contactInfoPage.setContactInfo(rowContact[4], rowContact[5], rowContact[6], rowContact[7]);
-            //contactInfoPage.clickBooking();
-            //contactInfoPage.clickConfirmButton();
-            Thread.sleep(5000);
+            contactInfoPage.clickBooking();
+            Thread.sleep(2000);
+            contactInfoPage.clickConfirmButton();
+            Thread.sleep(2000);
         }
     }
 

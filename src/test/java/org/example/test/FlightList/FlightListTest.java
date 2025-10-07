@@ -104,7 +104,7 @@ public class FlightListTest {
         if(resultMessage.equals("Pass")){
             boolean result = resultPage.clickNextPage();
             if(result){
-                actualMessage = "Hiện form thông tin liên lạc";
+                actualMessage = "Hiện form thông tin hành khách";
             }else {
                 actualMessage = resultMessage;
             }
